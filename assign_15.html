@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dynamic Data Dashboard</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: #666;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        button {
+            display: block;
+            margin: 0 auto 30px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            background: #222;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        @media (max-width: 700px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Student Performance Dashboard</h1>
+
+        <p class="subtitle">
+            Dynamic content and chart using JavaScript
+        </p>
+
+        <button onclick="loadData()">
+            Load Data
+        </button>
+
+        <!-- Dynamic cards -->
+        <div class="cards" id="cards"></div>
+
+        <!-- Chart -->
+        <div class="chart-container">
+            <canvas id="marksChart"></canvas>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // Static data
+        const students = [
+            {
+                name: "Aman",
+                marks: 85
+            },
+            {
+                name: "Mayank",
+                marks: 78
+            },
+            {
+                name: "Abhay",
+                marks: 92
+            },
+            {
+                name: "Rahul",
+                marks: 74
+            },
+            {
+                name: "Priya",
+                marks: 88
+            }
+        ];
+
+
+        let chart;
+
+
+        function loadData() {
+
+            // Calculate total marks
+            let total = 0;
+
+            students.forEach(student => {
+                total += student.marks;
+            });
+
+
+            // Calculate average
+            let average = total / students.length;
+
+
+            // Find highest marks
+            let highest = Math.max(
+                ...students.map(student => student.marks)
+            );
+
+
+            // Display dynamic cards
+            document.getElementById("cards").innerHTML = `
+
+                <div class="card">
+                    <h2>${students.length}</h2>
+                    <p>Total Students</p>
+                </div>
+
+                <div class="card">
+                    <h2>${average.toFixed(1)}</h2>
+                    <p>Average Marks</p>
+                </div>
+
+                <div class="card">
+                    <h2>${highest}</h2>
+                    <p>Highest Marks</p>
+                </div>
+
+            `;
+
+
+            // Create chart
+            const ctx =
+                document.getElementById("marksChart");
+
+            // Destroy previous chart
+            if (chart) {
+                chart.destroy();
+            }
+
+
+            chart = new Chart(ctx, {
+
+                type: "bar",
+
+                data: {
+
+                    labels: students.map(
+                        student => student.name
+                    ),
+
+                    datasets: [{
+
+                        label: "Student Marks",
+
+                        data: students.map(
+                            student => student.marks
+                        ),
+
+                        borderWidth: 1
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    scales: {
+
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>
